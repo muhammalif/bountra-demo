@@ -1,0 +1,33 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify slugify
+        run: |
+          node --input-type=module -e "
+          import { slugify } from './src/slug.js';
+          const cases = [
+            ['  hello world  ', 'hello-world'],
+            ['a   b__c--d', 'a-b-c-d'],
+            ['--lead and trail--', 'lead-and-trail'],
+            ['___', ''],
+            ['     ', ''],
+            ['already-valid-slug', 'already-valid-slug'],
+          ];
+          for (const [input, want] of cases) {
+            const got = slugify(input);
+            if (got !== want) throw new Error(\`slugify(\${JSON.stringify(input)}) = \${JSON.stringify(got)}, want \${JSON.stringify(want)}\`);
+          }
+          console.log('all slugify cases pass');
+          "
