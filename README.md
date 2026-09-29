@@ -1,2 +1,3 @@
 # bountra-demo
-Test repo for Bountra autonomous PR auditor demo
+
+Fixture repository for the Bountra autonomous PR auditor demo.
